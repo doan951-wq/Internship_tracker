@@ -2,6 +2,7 @@ from User_Input import get_action
 from actions import add_internship, edit_internship, remove_internship, select_internship,select_edit_option,enter_change,change_value
 from print_list import print_list
 from storage import save_data, load_data
+from database import sql_connect, sql_create_table, sql_get_internships
 
 
 
@@ -19,13 +20,20 @@ while True:
         break
 
 
-
+    elif action == "print":
+         connection, cursor = sql_connect()
+         internship_list = sql_get_internships(cursor)
+         print (internship_list)
+         connection.close()
         
-    if action == "add":
+    elif action == "add":
 
-        add_internship(internship_data)
-        print_list(internship_data)
-        save_data(internship_data)
+        connection,cursor = sql_connect()
+        sql_create_table(cursor)
+        add_internship(cursor, connection)
+        connection.close()
+
+
 
     elif action == "edit":
             edit_internship(internship_data)

@@ -1,6 +1,6 @@
 
-
-def add_internship(internship_data):
+from database import sql_add_internship
+def add_internship(cursor, connection):
 #Use append function to add to the list
     valid_choices_status = ["applied", "open", "closed"]
     
@@ -15,6 +15,14 @@ def add_internship(internship_data):
         if internship_status in valid_choices_status:
             break
         print ("Not a valid choice, Please choose a valid option")
+
+    sql_add_internship(
+        cursor,
+        connection,
+        internship_name,
+        internship_date,
+        internship_status,
+    )
     
   
     
@@ -26,7 +34,7 @@ def add_internship(internship_data):
 
     }
 
-    internship_data.append(user_input_data)
+    
 
         
 

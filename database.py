@@ -35,20 +35,4 @@ def sql_get_internships(cursor):
     return cursor.fetchall()
 
 
-connection, cursor = sql_connect()
-sql_create_table(cursor)
 
-sql_add_internship(
-    cursor,
-    connection,
-    "Microsoft Explore",
-    "09/21/25",
-    "open"
-)
-
-internships = sql_get_internships(cursor)
-
-
-print(internships)
-
-connection.close()

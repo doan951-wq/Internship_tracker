@@ -1,8 +1,8 @@
 #Create a variable where the user is able to select certain options and input there action
 def get_action():  
-    valid_answer = ["add", "remove", "edit", "stop"] 
+    valid_answer = ["add", "remove", "edit", "stop", "print"] 
     while True:
-        action = input("Please type the following options (Add, Edit, Remove, Stop):").lower()
+        action = input("Please type the following options (Add, Edit, Remove, Stop, Print):").lower()
 
         if action in valid_answer:
             break
