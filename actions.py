@@ -1,5 +1,5 @@
 
-from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect
+from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option
 def add_internship(cursor, connection):
 #Use append function to add to the list
     valid_choices_status = ["applied", "open", "closed"]
@@ -128,17 +128,17 @@ def change_value(cursor,connection,edit_action, user_selected_number, edit_chang
         
         
 
-def remove_internship(internship_data):
+def remove_internship(cursor,connection):
 
-    counter_number = 0
     
-    for line in internship_data:
-        counter_number+=1
-        print (counter_number, " .", line)
 
-    user_selected_number = int(input("Please select the number corresponding to the internship you want to delete: ").strip())-1
+    user_selected_number = int(input("Please select the number corresponding to the internship you want to delete: ").strip())
 
-    del internship_data[user_selected_number]
+    sql_delete_option(cursor, connection, user_selected_number)
+
+    
+
+    
 
     
 

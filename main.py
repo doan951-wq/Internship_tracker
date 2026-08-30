@@ -36,24 +36,22 @@ while True:
 
 
     elif action == "edit":
+            # prints the internship, connects to the data base then runs the various functions to find out what value the user wants to edit, select which internship by their database id, and then askes for the value the user is changing it to
             edit_internship()
-            selected_internship = select_internship()
-            ##this next     
             connection, cursor = sql_connect()
-            
-
             select_edit_option_value = select_edit_option()
-            enter_change_value = enter_change(select_edit_option_value)
+            selected_internship = select_internship()   
+            enter_changed_value = enter_change(select_edit_option_value)
             
-            change_value(cursor,connection, select_edit_option_value, selected_internship, enter_change_value)
+            change_value(cursor,connection, select_edit_option_value, selected_internship, enter_changed_value)
             
             
             
 
     elif action == "remove":
-        remove_internship(internship_data)
-        print_list(internship_data)
-        save_data(internship_data)
+        edit_internship() #prints the sql database
+        connection, cursor = sql_connect()
+        remove_internship(cursor, connection)
 
     
     

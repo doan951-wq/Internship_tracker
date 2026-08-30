@@ -67,6 +67,17 @@ def update_internship_date(cursor, connection, edit_value, user_selected_number)
     )
     connection.commit()
 
+def sql_delete_option(cursor, connection, user_selected_number):
+    cursor.execute(
+        """
+        DELETE FROM internships
+        WHERE id = ?
+        """,
+        (user_selected_number,)
+    
+    )
+    connection.commit()
+
 
 def sql_get_internships(cursor):
     cursor.execute("SELECT * FROM internships")
