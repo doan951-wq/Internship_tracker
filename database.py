@@ -12,12 +12,37 @@ def sql_create_table(cursor):
 #creates a table only once that gives a unique ID to every internship in the database
     cursor.execute("""CREATE TABLE IF NOT EXISTS internships (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        name TEXT,
-        apply_by TEXT,
-        status TEXT
+        name TEXT NOT NULL,
+        apply_by TEXT NOT NULL,
+        status TEXT NOT NULL
     )
     """)
 
+def sql_create_status_history_table(cursor):
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS status_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        internship_id INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        date_changed TEXT NOT NULL,
+        FOREIGN KEY (internship_id) REFERENCES internships(id)
+        )
+        """
+    )
+
+
+def sql_add_status_history(cursor, connection, internship_id, status, date_changed):
+    cursor.execute(
+        """
+        INSERT INTO status_history (internship_id, status, date_changed)
+        VALUES (?, ?, ?)
+        """,
+        (internship_id, status, date_changed)
+    )
+
+    connection.commit()
+    
 def sql_add_internship(cursor, connection, name, apply_by, status):
     
     cursor.execute(
@@ -82,6 +107,8 @@ def sql_delete_option(cursor, connection, user_selected_number):
 def sql_get_internships(cursor):
     cursor.execute("SELECT * FROM internships")
     return cursor.fetchall()
+
+
 
 
 

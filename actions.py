@@ -1,8 +1,9 @@
 
-from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option
+from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option, sql_add_status_history
+from datetime import datetime
 def add_internship(cursor, connection):
 #Use append function to add to the list
-    valid_choices_status = ["applied", "open", "closed"]
+    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
     
 
    
@@ -11,7 +12,7 @@ def add_internship(cursor, connection):
 
     while True:
         
-        internship_status = input("What is the status of the internship? (Applied, Open, or Closed): ").strip().lower()
+        internship_status = input("What is the status of the internship? (applied, oa, phone screen, interview, offer, rejected): ").strip().lower()
         if internship_status in valid_choices_status:
             break
         print ("Not a valid choice, Please choose a valid option")
@@ -77,7 +78,7 @@ def select_edit_option():
     return edit_action
 
 def enter_change(edit_action):
-    valid_choices_status = ["applied", "open", "closed"]
+    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
 
     while True:
 
@@ -89,7 +90,7 @@ def enter_change(edit_action):
         if edit_action == "status" and edit_change in valid_choices_status:
             break
         else:
-            print("Please chose a valid option (Open, Closed, Applied)")
+            print("Please chose a valid option (applied, oa, phone screen, interview, offer, rejected)")
 
     return edit_change
 
@@ -124,15 +125,24 @@ def change_value(cursor,connection,edit_action, user_selected_number, edit_chang
             edit_change,
             user_selected_number
         )
+
+        date_changed = datetime.now()
+
+        sql_add_status_history(cursor, connection, user_selected_number, edit_change, date_changed)
         
         
         
 
 def remove_internship(cursor,connection):
 
-    
+    while True:
+        try:
 
-    user_selected_number = int(input("Please select the number corresponding to the internship you want to delete: ").strip())
+            user_selected_number = int(input("Please select the number corresponding to the internship you want to delete: ").strip())
+            break
+         # User is only able to continue with the delete process if they select a number and not a string
+        except ValueError:            
+            print("Please enter a valid number")
 
     sql_delete_option(cursor, connection, user_selected_number)
 
