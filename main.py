@@ -36,20 +36,18 @@ while True:
 
 
     elif action == "edit":
-            edit_internship(internship_data)
+            edit_internship()
             selected_internship = select_internship()
+            ##this next     
+            connection, cursor = sql_connect()
             
 
             select_edit_option_value = select_edit_option()
             enter_change_value = enter_change(select_edit_option_value)
             
-            change_value(select_edit_option_value, 
-                         internship_data, 
-                         selected_internship, 
-                         enter_change_value)
+            change_value(cursor,connection, select_edit_option_value, selected_internship, enter_change_value)
             
-            print_list(internship_data)
-            save_data(internship_data)
+            
             
 
     elif action == "remove":

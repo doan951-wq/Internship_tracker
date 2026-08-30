@@ -1,5 +1,5 @@
 
-from database import sql_add_internship
+from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect
 def add_internship(cursor, connection):
 #Use append function to add to the list
     valid_choices_status = ["applied", "open", "closed"]
@@ -38,23 +38,26 @@ def add_internship(cursor, connection):
 
         
 
-def edit_internship(internship_data):
-    counter_number = 0
+def edit_internship():
+    
+    connection, cursor = sql_connect()
+    internships = sql_get_internships(cursor)
+    print(internships)
+    connection.close()
 
-    for line in internship_data:
-        counter_number += 1
-        print(counter_number, " ", line)
+    
 
 def select_internship():
+    # tells the user to select the internship and subtracts 1 to read it from the correct starting index
     while True:   
-        user_selected_number = int(input("Please select the internship you would like to edit with its corresponding number: ").strip())-1
+        user_selected_number = int(input("Please select the internship you would like to edit with its corresponding number: ").strip())
 
 
-        if not user_selected_number.is_integer():
-            print ("Invalid input, please enter a number")
+        #if not user_selected_number.is_integer():
+            #print ("Invalid input, please enter a number")
 
-        else:
-            break
+        #else:
+        break
             
     return user_selected_number
 
@@ -90,15 +93,38 @@ def enter_change(edit_action):
 
     return edit_change
 
-def change_value(edit_action, internship_data, user_selected_number, edit_change):      
+def change_value(cursor,connection,edit_action, user_selected_number, edit_change):
+
+          
     if edit_action == "name":
-        internship_data[user_selected_number]["Internship Name:"] = edit_change
+       
+        update_internship_name(
+            cursor,
+            connection,
+            edit_change,
+            user_selected_number
+        )
+        
 
     elif edit_action == "date":
-        internship_data[user_selected_number]["Date to Apply By:"] = edit_change
+        
+        update_internship_date(
+            cursor,
+            connection,
+            edit_change,
+            user_selected_number
+        )
+        
 
     elif edit_action == "status":
-        internship_data[user_selected_number]["Status:"] = edit_change
+        
+        update_internship_status(
+            cursor,
+            connection,
+            edit_change,
+            user_selected_number
+        )
+        
         
         
 

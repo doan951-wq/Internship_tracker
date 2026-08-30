@@ -30,6 +30,44 @@ def sql_add_internship(cursor, connection, name, apply_by, status):
 
     connection.commit()
 
+def update_internship_status(cursor,connection, edit_value, user_selected_number):
+    
+    cursor.execute(
+        """
+        UPDATE internships
+        SET status = ?
+        WHERE id = ?
+        """,
+        (edit_value, user_selected_number)
+        
+    )
+    connection.commit()
+
+    
+
+def update_internship_name(cursor,connection, edit_value, user_selected_number):
+    cursor.execute(
+        """
+        UPDATE internships
+        SET name = ?
+        WHERE id = ?
+        """,
+        (edit_value,user_selected_number)
+    )
+    connection.commit()
+
+def update_internship_date(cursor, connection, edit_value, user_selected_number):
+    cursor.execute(
+        """
+        UPDATE internships
+        SET apply_by = ?
+        WHERE id = ?
+        """,
+        (edit_value, user_selected_number)
+    )
+    connection.commit()
+
+
 def sql_get_internships(cursor):
     cursor.execute("SELECT * FROM internships")
     return cursor.fetchall()
