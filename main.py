@@ -1,17 +1,15 @@
 from User_Input import get_action
-from actions import add_internship, edit_internship, remove_internship, select_internship,select_edit_option,enter_change,change_value
-from print_list import print_list
-from storage import save_data, load_data
-from database import sql_connect, sql_create_table, sql_get_internships
+from actions import add_internship, edit_internship, remove_internship, select_internship,select_edit_option,enter_change,change_value, login_user
+from database import sql_connect, sql_create_table, sql_get_internships, sql_create_status_history_table, sql_create_user_id_table,sql_add_user
 
 
+connection, cursor = sql_connect()
+sql_create_table(cursor, connection)
+sql_create_status_history_table(cursor, connection)
+sql_create_user_id_table(cursor, connection)
+user_id = login_user(cursor, connection)
 
-internship_data = load_data()
-    
-        #example
-        #"Internship Name:": "Microsoft Explore",
-        #"Date to Apply By:" : "09/01/26",
-        #"Status:" : "Applied" #Applied, #Open # Closed
+   
 
 
 while True: 
@@ -22,7 +20,7 @@ while True:
 
     elif action == "print":
          connection, cursor = sql_connect()
-         internship_list = sql_get_internships(cursor)
+         internship_list = sql_get_internships(cursor, user_id)
          print (internship_list)
          connection.close()
         
@@ -30,7 +28,7 @@ while True:
 
         connection,cursor = sql_connect()
         sql_create_table(cursor)
-        add_internship(cursor, connection)
+        add_internship(cursor, connection, user_id)
         connection.close()
 
 

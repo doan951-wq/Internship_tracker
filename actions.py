@@ -1,7 +1,28 @@
 
-from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option, sql_add_status_history
+from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option, sql_add_status_history, sql_get_user, sql_add_user
 from datetime import datetime
-def add_internship(cursor, connection):
+
+def login_user(cursor,connection):
+    while True:
+        username = input("What is your name?").strip().lower()
+        result = sql_get_user (cursor, username)
+
+        
+
+        if result:
+            return result[0]
+            
+        else:
+            create_user = ("User not found. Would you like to create a user? (Y/N)")
+            if create_user == "y":
+                username = input("Please type out your username you would like to create")
+                sql_add_user(cursor, connection, username)
+            else:
+                break
+
+
+    connection.commit()
+def add_internship(cursor, connection, user_id):
 #Use append function to add to the list
     valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
     
@@ -20,6 +41,7 @@ def add_internship(cursor, connection):
     sql_add_internship(
         cursor,
         connection,
+        user_id,
         internship_name,
         internship_date,
         internship_status,
@@ -125,8 +147,8 @@ def change_value(cursor,connection,edit_action, user_selected_number, edit_chang
             edit_change,
             user_selected_number
         )
-
-        date_changed = datetime.now()
+        #everytime the user edits the status of an internship, the current date is recorded along with the status changed and stored in a table
+        date_changed = datetime.now().isoformat()
 
         sql_add_status_history(cursor, connection, user_selected_number, edit_change, date_changed)
         
