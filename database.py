@@ -152,7 +152,7 @@ def sql_get_internships(cursor, username):
     cursor.execute(
         """
         SELECT * FROM internships
-        where user_id = id
+        where user_id = ?
         """,
         (username,))
     return cursor.fetchall()

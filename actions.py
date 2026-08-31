@@ -13,9 +13,9 @@ def login_user(cursor,connection):
             return result[0]
             
         else:
-            create_user = ("User not found. Would you like to create a user? (Y/N)")
+            create_user = input("User not found. Would you like to create a user? (Y/N): ").lower().strip()
             if create_user == "y":
-                username = input("Please type out your username you would like to create")
+                username = input("Please type out your username you would like to create: ").lower().strip()
                 sql_add_user(cursor, connection, username)
             else:
                 break

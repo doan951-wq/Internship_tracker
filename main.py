@@ -27,7 +27,7 @@ while True:
     elif action == "add":
 
         connection,cursor = sql_connect()
-        sql_create_table(cursor)
+        sql_create_table(cursor, connection)
         add_internship(cursor, connection, user_id)
         connection.close()
 
