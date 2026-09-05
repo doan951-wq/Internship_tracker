@@ -49,13 +49,7 @@ def add_internship(cursor, connection, user_id):
     
   
     
-    user_input_data = {
-         
-                        "Internship Name:": internship_name,
-                        "Date to Apply By:": internship_date, 
-                        "Status:": internship_status
-
-    }
+ 
 
     
 
@@ -71,7 +65,6 @@ def edit_internship():
     
 
 def select_internship():
-    # tells the user to select the internship and subtracts 1 to read it from the correct starting index
     while True:   
         user_selected_number = int(input("Please select the internship you would like to edit with its corresponding number: ").strip())
 

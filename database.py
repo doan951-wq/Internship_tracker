@@ -154,8 +154,24 @@ def sql_get_internships(cursor, username):
         SELECT * FROM internships
         where user_id = ?
         """,
-        (username,))
+        (username,)
+    )
     return cursor.fetchall()
+
+def sql_count_status(cursor, user_id):
+    cursor.execute(
+        """
+        SELECT status, COUNT(*)
+        FROM internships
+        WHERE user_id = ?
+        GROUP BY status
+        """,
+        (user_id,)
+    )
+
+    return cursor.fetchall()
+
+
 
 
 

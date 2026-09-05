@@ -1,6 +1,6 @@
 from User_Input import get_action
 from actions import add_internship, edit_internship, remove_internship, select_internship,select_edit_option,enter_change,change_value, login_user
-from database import sql_connect, sql_create_table, sql_get_internships, sql_create_status_history_table, sql_create_user_id_table,sql_add_user
+from database import sql_connect, sql_create_table, sql_get_internships, sql_create_status_history_table, sql_create_user_id_table, sql_add_user, sql_count_status
 
 
 connection, cursor = sql_connect()
@@ -50,6 +50,12 @@ while True:
         edit_internship() #prints the sql database
         connection, cursor = sql_connect()
         remove_internship(cursor, connection)
+
+    elif action == "history":
+         connection, cursor = sql_connect()
+         print(sql_count_status(cursor, user_id))
+         
+         
 
     
     
