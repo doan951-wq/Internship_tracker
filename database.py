@@ -171,17 +171,7 @@ def sql_count_status(cursor, user_id):
 
     return cursor.fetchall()
 
-def sql_status_tracker_history(cursor, status):
-    cursor.execute(
-        """
-        SELECT COUNT(DISTINCT internship_id)
-        FROM status_history
-        WHERE status = ?
-        """,
-        (status,)
-    )
 
-    return cursor.fetchone()[0]
 
 
 
