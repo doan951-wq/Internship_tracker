@@ -1,5 +1,8 @@
 
-from database import sql_add_internship, update_internship_name, update_internship_date, update_internship_status, sql_get_internships, sql_connect,sql_delete_option, sql_add_status_history, sql_get_user, sql_add_user
+from database import (sql_add_internship, update_internship_name, update_internship_date, update_internship_status, 
+                        sql_get_internships, sql_connect,sql_delete_option, sql_add_status_history, 
+                        sql_get_user, sql_add_user
+                        )
 from datetime import datetime
 
 def login_user(cursor,connection):
@@ -22,32 +25,59 @@ def login_user(cursor,connection):
 
 
     connection.commit()
-def add_internship(cursor, connection, user_id):
-#Use append function to add to the list
-    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
-    
 
-   
+def get_internship_info():
+    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
+        
     internship_name = input("What is the name of the internship?: ").strip()
     internship_date = input("What the the date of the internship? (XX/XX/XXXX): ").strip()
-
+    
     while True:
-        
+            
         internship_status = input("What is the status of the internship? (applied, oa, phone screen, interview, offer, rejected): ").strip().lower()
         if internship_status in valid_choices_status:
             break
         print ("Not a valid choice, Please choose a valid option")
 
-    sql_add_internship(
-        cursor,
-        connection,
-        user_id,
-        internship_name,
-        internship_date,
-        internship_status,
-    )
+    return internship_name, internship_date, internship_status
+
+
+def add_internship(cursor, connection, user_id):
+
+    internship_name, internship_date, internship_status = get_internship_info()
     
-  
+    save_internship_database(
+                             cursor, 
+                             connection, 
+                             user_id, 
+                             internship_name, 
+                             internship_date, 
+                             internship_status
+                             )
+
+    
+def save_internship_database(
+                             cursor, 
+                             connection, 
+                             user_id, 
+                             internship_name, 
+                             internship_date, 
+                             internship_status
+                             ):
+
+    internship_id = sql_add_internship(
+                                       cursor,
+                                       connection,
+                                       user_id,
+                                       internship_name, 
+                                       internship_date,
+                                       internship_status
+                                       )
+
+    date_changed = datetime.now().isoformat()
+
+    sql_add_status_history (cursor, connection, internship_id, internship_status, date_changed)
+
     
  
 

@@ -1,15 +1,15 @@
 import sqlite3
 
 def sql_connect ():
+    """Opens a connection to the internship database."""
     connection = sqlite3.connect("internship.db")
     cursor = connection.cursor()
     return connection, cursor
 
 
 
-
 def sql_create_table(cursor, connection):
-#creates a table that gives a unique ID to every internship in the database
+    """Creates a table that gives a unique ID to every internship in the database."""
     cursor.execute("""CREATE TABLE IF NOT EXISTS internships (
         
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -48,7 +48,7 @@ def sql_add_user(cursor, connection, username):
     return cursor.lastrowid
 
 def sql_create_status_history_table(cursor, connection):
-    #Creates a table the stores the history of changes to internship status and records the date it was changed
+    """Creates a table the stores the history of changes to internship status and records the date it was changed."""
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS status_history (
@@ -86,7 +86,7 @@ def sql_add_status_history(cursor, connection, internship_id, status, date_chang
     connection.commit()
     
 def sql_add_internship(cursor, connection,user_id, name, apply_by, status):
-    #Adds the internship into the database
+    """Adds the internship into the internships database"""
     
     cursor.execute(
         """
@@ -98,8 +98,12 @@ def sql_add_internship(cursor, connection,user_id, name, apply_by, status):
 
     connection.commit()
 
+    #Immediately returns the ID of the internship that was just added
+    return cursor.lastrowid 
+
+
 def update_internship_status(cursor,connection, edit_value, user_selected_number):
-    #Changes a specifc internship data based on the value the user decided to edit
+    """Changes a specifc internship data based on the value the user decided to edit"""
     
     cursor.execute(
         """
@@ -115,17 +119,19 @@ def update_internship_status(cursor,connection, edit_value, user_selected_number
     
 
 def update_internship_name(cursor, connection, edit_value, user_selected_number):
+    """Updates the internship name based on what internship the user selected"""
     cursor.execute(
         """
         UPDATE internships
         SET name = ?
         WHERE id = ?
         """,
-        (edit_value,user_selected_number)
+        (edit_value, user_selected_number)
     )
     connection.commit()
 
 def update_internship_date(cursor, connection, edit_value, user_selected_number):
+    """Updates the internship date based on what the user selecte"""
     cursor.execute(
         """
         UPDATE internships
@@ -137,6 +143,7 @@ def update_internship_date(cursor, connection, edit_value, user_selected_number)
     connection.commit()
 
 def sql_delete_option(cursor, connection, user_selected_number):
+    """Deltes the internship the user selects from the database"""
     cursor.execute(
         """
         DELETE FROM internships
@@ -149,6 +156,7 @@ def sql_delete_option(cursor, connection, user_selected_number):
 
 
 def sql_get_internships(cursor, username):
+    """Gets all the internships from the internships database and returns a tuple of all the values"""
     cursor.execute(
         """
         SELECT * FROM internships
@@ -158,7 +166,8 @@ def sql_get_internships(cursor, username):
     )
     return cursor.fetchall()
 
-def sql_count_status(cursor, user_id):
+def sql_count_current_status(cursor, user_id):
+    """Counts the number of internships and grousp them based on their current status (i.e OA, Rejected, etc)"""
     cursor.execute(
         """
         SELECT status, COUNT(*)
@@ -172,6 +181,7 @@ def sql_count_status(cursor, user_id):
     return cursor.fetchall()
 
 def sql_status_tracker_history(cursor, status):
+    """This function specifically tracks how many internships reach a specifc status to help calculate the conversion rate. (ex. Applied --> OA Conversion rate) """
     cursor.execute(
         """
         SELECT COUNT(DISTINCT internship_id)
