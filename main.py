@@ -1,5 +1,5 @@
 from User_Input import get_action
-from actions import (add_internship, edit_internship, remove_internship, select_internship,select_edit_option,
+from actions import (add_internship, display_internship, remove_internship, select_internship,select_edit_option,
                      enter_change,change_value, login_user, get_internship_info)
 from database import (sql_connect, sql_create_table, sql_get_internships, sql_create_status_history_table, 
                       sql_create_user_id_table, sql_count_current_status, sql_status_tracker_history)
@@ -16,6 +16,9 @@ user_id = login_user(cursor, connection)
 
 
 while True: 
+    """Gets the action the user inputs and does the specific action by conencting to the database and
+    calling functions"""
+
     action = get_action()
     if action == "stop":
         break
@@ -40,7 +43,7 @@ while True:
         """Prints the internship, connects to the data base then runs the various functions to find out what value the user wants to edit, selects
            which internship by their database id, and then askes for the value the user is changing it to"""
         
-        edit_internship()
+        display_internship()
         connection, cursor = sql_connect()
         select_edit_option_value = select_edit_option()
         selected_internship = select_internship()   
@@ -63,10 +66,6 @@ while True:
         # Applied to OA
         # 18 - 10 (oa/applied)
         # Turn SQL tuple return into dictionary
-       
-
-        
-
         
             
         applied = sql_status_tracker_history(cursor, "applied")
@@ -75,20 +74,14 @@ while True:
         
         if applied > 0:
             print(f"Applied to OA Conversion Rate: {oa/applied*100}%")
+            print (f"OA: {oa}, Applied: {applied}")
         else:
             print (f"OA: {oa}, Applied: {applied}")
-
-        
-            
-
-
-
-            
             
             
 
     elif action == "remove":
-        edit_internship() #prints the sql database
+        display_internship() #prints the sql database
         connection, cursor = sql_connect()
         remove_internship(cursor, connection)
 
