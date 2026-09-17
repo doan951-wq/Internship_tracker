@@ -55,7 +55,7 @@ while True:
         connection, cursor = sql_connect()
         status_counts = sql_count_current_status(cursor, user_id)
         print("")
-        print("Statistics")
+        print("Current Statuses")
         print("__________")
         print("")
         for stats in status_counts:
@@ -81,16 +81,16 @@ while True:
         if applied > 0:
             print(f"Applied to OA Conversion Rate: {oa/applied*100}%")
             #print (f"OA: {oa}, Applied: {applied}")
-        elif oa > 0:
+        if oa > 0:
             print(f"OA to Phone Screen Conversion Rate: {phone_screen/oa*100}%")
-        elif phone_screen > 0:
+        if phone_screen > 0:
             print(f"Phone Screen to Interview Conversion Rate: {interview/phone_screen*100}%")
-        elif interview > 0:
+        if interview > 0:
             print(f"Interview to Offer Conversion Rate: {offer/interview*100}%")
-        elif accepted > 0:
-            print(f"Accepted Conversion Rate: {accepted/applied*100}%")
-        elif rejected > 0:
-            print(f"Rejected Conversion Rate: {rejected/applied*100}%")
+        if accepted > 0:
+            print(f"Accepted Rate: {accepted/applied*100}%")
+        if rejected > 0:
+            print(f"Rejected Rate: {rejected/applied*100}%")
         
 
             #applied, OA, phone screen, interview, offer, accepted/rejected
