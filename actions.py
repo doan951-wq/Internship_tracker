@@ -28,14 +28,14 @@ def login_user(cursor,connection):
 
 def get_internship_info():
     """Askes the user to input values for the internship they are trying to track"""
-    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
+    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "accepted", "rejected"]
         
     internship_name = input("What is the name of the internship?: ").strip()
     internship_date = input("What the the date of the internship? (XX/XX/XXXX): ").strip()
     
     while True:
             
-        internship_status = input("What is the status of the internship? (applied, oa, phone screen, interview, offer, rejected): ").strip().lower()
+        internship_status = input("What is the status of the internship? (applied, oa, phone screen, interview, offer, accepted, rejected): ").strip().lower()
         if internship_status in valid_choices_status:
             break
         print ("Not a valid choice, Please choose a valid option")
@@ -102,6 +102,8 @@ def get_status_history_to_add(current_status):
         "phone screen",
         "interview",
         "offer",
+        "accepted",
+        "rejected",
 
     ]
     # Returns a list of the current status plus all the previous statuses to help keep track 
@@ -153,7 +155,7 @@ def select_edit_option():
     return edit_action
 
 def enter_change(edit_action):
-    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "rejected"]
+    valid_choices_status = ["applied", "oa", "phone screen", "interview", "offer", "accepted", "rejected"]
 
     while True:
 
@@ -165,7 +167,7 @@ def enter_change(edit_action):
         if edit_action == "status" and edit_change in valid_choices_status:
             break
         else:
-            print("Please chose a valid option (applied, oa, phone screen, interview, offer, rejected)")
+            print("Please chose a valid option (applied, oa, phone screen, interview, offer, accepted, rejected)")
 
     return edit_change
 

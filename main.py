@@ -69,14 +69,31 @@ while True:
         
             
         applied = sql_status_tracker_history(cursor, "applied")
-           
         oa = sql_status_tracker_history(cursor, "oa")
+        phone_screen = sql_status_tracker_history(cursor, "phone screen")
+        interview = sql_status_tracker_history(cursor, "interview")
+        offer = sql_status_tracker_history(cursor, "offer")
+        accepted = sql_status_tracker_history(cursor, "accepted")
+        rejected = sql_status_tracker_history(cursor, "rejected")
+
+
         
         if applied > 0:
             print(f"Applied to OA Conversion Rate: {oa/applied*100}%")
-            print (f"OA: {oa}, Applied: {applied}")
-        else:
-            print (f"OA: {oa}, Applied: {applied}")
+            #print (f"OA: {oa}, Applied: {applied}")
+        elif oa > 0:
+            print(f"OA to Phone Screen Conversion Rate: {phone_screen/oa*100}%")
+        elif phone_screen > 0:
+            print(f"Phone Screen to Interview Conversion Rate: {interview/phone_screen*100}%")
+        elif interview > 0:
+            print(f"Interview to Offer Conversion Rate: {offer/interview*100}%")
+        elif accepted > 0:
+            print(f"Accepted Conversion Rate: {accepted/applied*100}%")
+        elif rejected > 0:
+            print(f"Rejected Conversion Rate: {rejected/applied*100}%")
+        
+
+            #applied, OA, phone screen, interview, offer, accepted/rejected
             
             
 
