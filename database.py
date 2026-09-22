@@ -180,15 +180,17 @@ def sql_count_current_status(cursor, user_id):
 
     return cursor.fetchall()
 
-def sql_status_tracker_history(cursor, status):
-    """This function specifically tracks how many internships reach a specifc status to help calculate the conversion rate. (ex. Applied --> OA Conversion rate) """
+def sql_status_tracker_history(cursor, user_id, status):
     cursor.execute(
         """
-        SELECT COUNT(DISTINCT internship_id)
+        SELECT COUNT(DISTINCT status_history.internship_id)
         FROM status_history
-        WHERE status = ?
+        JOIN internships
+        ON status_history.internship_id = internships.id
+        WHERE internships.user_id = ?
+        AND status_history.status = ?
         """,
-        (status,)
+        (user_id, status)
     )
 
     return cursor.fetchone()[0]

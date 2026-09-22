@@ -103,7 +103,6 @@ def get_status_history_to_add(current_status):
         "interview",
         "offer",
         "accepted",
-        "rejected",
 
     ]
     # Returns a list of the current status plus all the previous statuses to help keep track 
@@ -224,6 +223,8 @@ def remove_internship(cursor,connection):
             print("Please enter a valid number")
 
     sql_delete_option(cursor, connection, user_selected_number)
+
+    
 
     
 
