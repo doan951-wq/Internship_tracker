@@ -148,8 +148,10 @@ def test_status_history_isolated_by_user():
 
     tony_oa = sql_status_tracker_history(cursor, tony_id, "oa")
     bob_oa = sql_status_tracker_history(cursor, bob_id, "oa")
+    tony_interview = sql_status_tracker_history(cursor, tony_id, "interview")
 
     assert tony_oa == 1
     assert bob_oa == 1
+    assert tony_interview == 0
 
     connection.close()
