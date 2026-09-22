@@ -68,13 +68,13 @@ while True:
         # Turn SQL tuple return into dictionary
         
             
-        applied = sql_status_tracker_history(cursor, "applied")
-        oa = sql_status_tracker_history(cursor, "oa")
-        phone_screen = sql_status_tracker_history(cursor, "phone screen")
-        interview = sql_status_tracker_history(cursor, "interview")
-        offer = sql_status_tracker_history(cursor, "offer")
-        accepted = sql_status_tracker_history(cursor, "accepted")
-        rejected = sql_status_tracker_history(cursor, "rejected")
+        applied = sql_status_tracker_history(cursor, user_id, "applied")
+        oa = sql_status_tracker_history(cursor, user_id, "oa")
+        phone_screen = sql_status_tracker_history(cursor, user_id, "phone screen")
+        interview = sql_status_tracker_history(cursor, user_id, "interview")
+        offer = sql_status_tracker_history(cursor, user_id, "offer")
+        accepted = sql_status_tracker_history(cursor, user_id, "accepted")
+        rejected = sql_status_tracker_history(cursor, user_id, "rejected")
 
 
         
