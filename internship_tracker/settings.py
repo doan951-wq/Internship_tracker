@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Load our internship-applications feature when Django starts.
     'applications.apps.ApplicationsConfig',
 ]
 
@@ -74,8 +75,11 @@ WSGI_APPLICATION = 'internship_tracker.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+    # `default` is the connection Django uses unless we request another one.
     'default': {
+        # The engine selects Django's built-in PostgreSQL support.
         'ENGINE': 'django.db.backends.postgresql',
+        # This is the PostgreSQL database we created with `createdb`.
         'NAME': 'internship_tracker',
     }
 }
