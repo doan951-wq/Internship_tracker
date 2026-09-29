@@ -17,6 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+# Import the function we wrote in applications/views.py.
+from applications.views import internship_list
+
+# Django reads this list to choose a view for each requested address.
 urlpatterns = [
+    # An empty route matches the homepage (/). Django calls this view for us.
+    path('', internship_list),
     path('admin/', admin.site.urls),
 ]
