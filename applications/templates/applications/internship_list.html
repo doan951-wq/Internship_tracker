@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Internship tracker</title>
+</head>
+<body>
+    <!-- h1 marks the main heading of the page. -->
+    <h1>Your internship tracker</h1>
+    <!-- ul is a bulleted list; each li below is one item in that list. -->
+    <ul>
+        {% for internship in internships %}
+            <!-- Double braces insert a value from an internship object. -->
+            <li>{{ internship.name }} — {{ internship.status }}</li>
+        {% empty %}
+            <li>No internships yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
