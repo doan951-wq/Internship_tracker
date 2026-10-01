@@ -1,5 +1,9 @@
-# Django provides render() to load an HTML template and return a response.
-from django.shortcuts import render
+# Django provides render() for HTML pages and redirect() to send the browser
+# to another URL after a successful form submission.
+from django.shortcuts import redirect, render
+
+# Import the form class we wrote in this app's forms.py file.
+from .forms import InternshipForm
 
 # Import our Internship model class from this app's models.py file.
 from .models import Internship
@@ -17,3 +21,19 @@ def internship_list(request):
 
     # Django searches the installed apps' templates folders for this file.
     return render(request, "applications/internship_list.html", context)
+
+
+def internship_new(request):
+    if request.method == "POST":
+        # request.POST holds the values the browser submitted.
+        form = InternshipForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+    else:
+        # A GET request displays an empty form.
+        form = InternshipForm()
+
+    # An invalid POST shows the same form again with validation errors.
+    context = {"form": form}
+    return render(request, "applications/internship_new.html", context)

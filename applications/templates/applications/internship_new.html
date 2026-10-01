@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New internship</title>
+</head>
+<body>
+    <h1>New internship</h1>
+    <!-- POST sends the entered values to the view at this same URL. -->
+    <form method="post">
+        <!-- Django requires this token to protect form submissions. -->
+        {% csrf_token %}
+        <!-- Django fills in this form object from the view's context dictionary. -->
+        {{ form.as_p }}
+        <p>Enter the deadline as YYYY-MM-DD, for example 2026-10-31.</p>
+        <button type="submit">Save internship</button>
+    </form>
+</body>
+</html>

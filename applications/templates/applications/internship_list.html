@@ -11,7 +11,7 @@
     <ul>
         {% for internship in internships %}
             <!-- Double braces insert a value from an internship object. -->
-            <li>{{ internship.name }} — {{ internship.status }}</li>
+            <li>{{ internship.name }} — {{ internship.status }} — due {{ internship.apply_by }}</li>
         {% empty %}
             <li>No internships yet.</li>
         {% endfor %}
