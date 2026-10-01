@@ -7,11 +7,16 @@
 <body>
     <!-- h1 marks the main heading of the page. -->
     <h1>Your internship tracker</h1>
+    <!-- href is the address the browser opens when this link is clicked. -->
+    <p><a href="/new/">Add internship</a></p>
     <!-- ul is a bulleted list; each li below is one item in that list. -->
     <ul>
         {% for internship in internships %}
             <!-- Double braces insert a value from an internship object. -->
-            <li>{{ internship.name }} — {{ internship.status }} — due {{ internship.apply_by }}</li>
+            <li>
+                {{ internship.name }} — {{ internship.status }} — due {{ internship.apply_by }}
+                <a href="/{{ internship.id }}/edit/">Edit</a>
+            </li>
         {% empty %}
             <li>No internships yet.</li>
         {% endfor %}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit internship</title>
+</head>
+<body>
+    <h1>Edit {{ internship.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <!-- The form's fields are filled with this internship's current values. -->
+        {{ form.as_p }}
+        <p>Enter the deadline as YYYY-MM-DD, for example 2026-10-31.</p>
+        <button type="submit">Save changes</button>
+    </form>
+</body>
+</html>

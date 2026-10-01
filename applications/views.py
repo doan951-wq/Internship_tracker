@@ -1,6 +1,6 @@
 # Django provides render() for HTML pages and redirect() to send the browser
 # to another URL after a successful form submission.
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 # Import the form class we wrote in this app's forms.py file.
 from .forms import InternshipForm
@@ -37,3 +37,20 @@ def internship_new(request):
     # An invalid POST shows the same form again with validation errors.
     context = {"form": form}
     return render(request, "applications/internship_new.html", context)
+
+
+def internship_edit(request, internship_id):
+    # Find the row named by the URL, or show a 404 page if it does not exist.
+    internship = get_object_or_404(Internship, id=internship_id)
+    if request.method == "POST":
+        # instance= makes save() update this row instead of creating a new one.
+        form = InternshipForm(request.POST, instance=internship)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+    else:
+        # On GET, instance= fills the fields with this row's current values.
+        form = InternshipForm(instance=internship)
+
+    context = {"form": form, "internship": internship}
+    return render(request, "applications/internship_edit.html", context)
