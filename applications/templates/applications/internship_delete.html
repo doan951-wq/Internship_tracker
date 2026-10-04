@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete internship</title>
+</head>
+<body>
+    <h1>Delete {{ internship.name }}?</h1>
+    <p>This will remove the internship from your database.</p>
+    <!-- The form sends a POST request only when you click the button. -->
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete it</button>
+    </form>
+    <p><a href="/">Cancel</a></p>
+</body>
+</html>

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 # Import the function we wrote in applications/views.py.
-from applications.views import internship_edit, internship_list, internship_new
+from applications.views import internship_delete, internship_edit, internship_list, internship_new
 
 # Django reads this list to choose a view for each requested address.
 urlpatterns = [
@@ -27,5 +27,6 @@ urlpatterns = [
     path('new/', internship_new),
     # Django converts the number in the URL into the internship_id argument.
     path('<int:internship_id>/edit/', internship_edit),
+    path('<int:internship_id>/delete/', internship_delete),
     path('admin/', admin.site.urls),
 ]

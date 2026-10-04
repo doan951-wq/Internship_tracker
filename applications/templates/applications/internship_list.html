@@ -16,6 +16,7 @@
             <li>
                 {{ internship.name }} — {{ internship.status }} — due {{ internship.apply_by }}
                 <a href="/{{ internship.id }}/edit/">Edit</a>
+                <a href="/{{ internship.id }}/delete/">Delete</a>
             </li>
         {% empty %}
             <li>No internships yet.</li>

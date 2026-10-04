@@ -54,3 +54,17 @@ def internship_edit(request, internship_id):
 
     context = {"form": form, "internship": internship}
     return render(request, "applications/internship_edit.html", context)
+
+
+def internship_delete(request, internship_id):
+    # Use the number in the URL to find the internship being deleted.
+    internship = get_object_or_404(Internship, id=internship_id)
+
+    # Only a submitted form (POST) deletes the row. Visiting the page (GET)
+    # merely shows a confirmation question.
+    if request.method == "POST":
+        internship.delete()
+        return redirect("/")
+
+    context = {"internship": internship}
+    return render(request, "applications/internship_delete.html", context)
