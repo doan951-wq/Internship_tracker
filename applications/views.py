@@ -12,8 +12,8 @@ from .models import Internship
 # A view is a function Django calls to handle a browser request.
 # Django supplies the request argument with information about that visit.
 def internship_list(request):
-    # Django's manager retrieves the records as a collection of model objects.
-    internships = Internship.objects.all()
+    # Retrieve all internships with the earliest application deadlines first.
+    internships = Internship.objects.order_by("apply_by")
 
     # A context dictionary makes Python values available in the HTML template.
     # The key "internships" is the name the template will use for this collection.

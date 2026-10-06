@@ -17,6 +17,20 @@ class InternshipListTests(TestCase):
         # The test passes only if the page contains this name.
         self.assertContains(response, "Google")
 
+    def test_homepage_orders_internships_by_deadline(self):
+        # Create the later deadline first to check that dates control the order.
+        later = Internship.objects.create(
+            name="Google", apply_by=date(2026, 10, 31)
+        )
+        earlier = Internship.objects.create(
+            name="Microsoft", apply_by=date(2026, 10, 15)
+        )
+
+        response = self.client.get("/")
+
+        # Compare the rows supplied to the template with the expected order.
+        self.assertEqual(list(response.context["internships"]), [earlier, later])
+
 
 class InternshipCreateTests(TestCase):
     def test_submitting_valid_form_creates_internship(self):
