@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 # Import the function we wrote in applications/views.py.
 from applications.views import internship_delete, internship_edit, internship_list, internship_new
@@ -28,5 +28,6 @@ urlpatterns = [
     # Django converts the number in the URL into the internship_id argument.
     path('<int:internship_id>/edit/', internship_edit),
     path('<int:internship_id>/delete/', internship_delete),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 ]
