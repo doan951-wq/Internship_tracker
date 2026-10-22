@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import InternshipForm
 
 # Import our Internship model class from this app's models.py file.
-from .models import Internship
+from .models import STATUS_CHOICES, Internship
 
 
 # A view is a function Django calls to handle a browser request.
@@ -15,9 +15,25 @@ def internship_list(request):
     # Retrieve all internships with the earliest application deadlines first.
     internships = Internship.objects.order_by("apply_by")
 
+    # GET parameters let the filter be bookmarked or shared in the page URL.
+    search_query = request.GET.get("q", "")
+    if search_query:
+        internships = internships.filter(name__icontains=search_query)
+
+    selected_status = request.GET.get("status", "")
+    if selected_status in dict(STATUS_CHOICES):
+        internships = internships.filter(status=selected_status)
+    else:
+        selected_status = ""
+
     # A context dictionary makes Python values available in the HTML template.
     # The key "internships" is the name the template will use for this collection.
-    context = {"internships": internships}
+    context = {
+        "internships": internships,
+        "status_choices": STATUS_CHOICES,
+        "selected_status": selected_status,
+        "search_query": search_query
+    }
 
     # Django searches the installed apps' templates folders for this file.
     return render(request, "applications/internship_list.html", context)

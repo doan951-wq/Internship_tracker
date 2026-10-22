@@ -2,7 +2,7 @@ from datetime import date
 
 from django.test import TestCase
 
-from .models import Internship
+from .models import STATUS_CHOICES, Internship
 
 
 # Django finds classes that inherit from TestCase and runs their test_ methods.
@@ -30,6 +30,68 @@ class InternshipListTests(TestCase):
 
         # Compare the rows supplied to the template with the expected order.
         self.assertEqual(list(response.context["internships"]), [earlier, later])
+
+    def test_status_filter_shows_only_matching_internships_in_deadline_order(self):
+        later = Internship.objects.create(
+            name="Google", apply_by=date(2026, 10, 31), status="interview"
+        )
+        earlier = Internship.objects.create(
+            name="Microsoft", apply_by=date(2026, 10, 15), status="interview"
+        )
+        Internship.objects.create(
+            name="Amazon", apply_by=date(2026, 10, 1), status="applied"
+        )
+
+        response = self.client.get("/", {"status": "interview"})
+
+        self.assertEqual(list(response.context["internships"]), [earlier, later])
+        self.assertContains(response, "Google")
+        self.assertContains(response, "Microsoft")
+        self.assertNotContains(response, "Amazon")
+        self.assertContains(
+            response, '<option value="interview" selected>Interview</option>',
+            html=True,
+        )
+
+    def test_status_filter_supports_every_status_choice(self):
+        for status, label in STATUS_CHOICES:
+            Internship.objects.create(
+                name=label, apply_by=date(2026, 10, 31), status=status
+            )
+
+        for status, label in STATUS_CHOICES:
+            with self.subTest(status=status):
+                response = self.client.get("/", {"status": status})
+                self.assertEqual(
+                    list(response.context["internships"].values_list("status", flat=True)),
+                    [status],
+                )
+
+    def test_status_filter_with_no_matches_shows_empty_message(self):
+        Internship.objects.create(name="Google", apply_by=date(2026, 10, 31))
+
+        response = self.client.get("/", {"status": "offer"})
+
+        self.assertEqual(list(response.context["internships"]), [])
+        self.assertContains(response, "No internships match this status.")
+        self.assertNotContains(response, "No internships yet.")
+
+    def test_all_statuses_and_invalid_status_show_all_internships(self):
+        later = Internship.objects.create(
+            name="Google", apply_by=date(2026, 10, 31), status="interview"
+        )
+        earlier = Internship.objects.create(
+            name="Microsoft", apply_by=date(2026, 10, 15), status="applied"
+        )
+
+        for params in ({}, {"status": ""}, {"status": "unknown"}):
+            with self.subTest(params=params):
+                response = self.client.get("/", params)
+                self.assertEqual(list(response.context["internships"]), [earlier, later])
+                self.assertContains(
+                    response, '<option value="" selected>All statuses</option>',
+                    html=True,
+                )
 
 
 class InternshipCreateTests(TestCase):
