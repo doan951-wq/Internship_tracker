@@ -21,6 +21,12 @@
         </select>
         <button type="submit">Filter</button>
     </form>
+    <form method ="post" action="{% url 'logout' %}">
+
+        {% csrf_token %}
+        <button type="submit"> Log Out</button>
+
+    </form>
     <!-- ul is a bulleted list; each li below is one item in that list. -->
     <ul>
         {% for internship in internships %}
