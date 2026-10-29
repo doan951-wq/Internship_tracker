@@ -181,7 +181,9 @@ class InternshipEditTests(AuthenticatedTestCase):
     def test_submitting_edit_form_updates_existing_internship(self):
         # Create the row that the edit form should update.
         internship = Internship.objects.create(
-            name="Google", apply_by=date(2026, 10, 31)
+            name="Google",
+            apply_by=date(2026, 10, 31),
+            owner=self.user,
         )
 
         # Use this row's ID to submit its edit form.
@@ -203,12 +205,33 @@ class InternshipEditTests(AuthenticatedTestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_cannot_edit_another_users_internship(self):
+        other_user = get_user_model().objects.create_user(
+            username = "otheruser"
+        )
+        internship = Internship.objects.create(
+            name="Google",
+            apply_by=date(2026, 10, 31),
+            owner = other_user,
+        )
+
+        response = self.client.post(f"/{internship.id}/edit/", {
+
+            "name": "Changed",
+            "apply_by": "2026-10-31",
+            "status": "applied",
+        })
+
+        self.assertEqual(response.status_code, 404)
+        internship.refresh_from_db()
+        self.assertEqual(internship.name, "Google")
+
 
 class InternshipDeleteTests(AuthenticatedTestCase):
     def test_visiting_delete_page_keeps_internship(self):
         # Create an internship to show on the confirmation page.
         internship = Internship.objects.create(
-            name="Google", apply_by=date(2026, 10, 31)
+            name="Google", apply_by=date(2026, 10, 31), owner=self.user
         )
 
         # Visiting the page should ask for confirmation without deleting.
@@ -220,7 +243,7 @@ class InternshipDeleteTests(AuthenticatedTestCase):
     def test_confirming_delete_removes_internship(self):
         # Create the internship that we will confirm deleting.
         internship = Internship.objects.create(
-            name="Google", apply_by=date(2026, 10, 31)
+            name="Google", apply_by=date(2026, 10, 31), owner=self.user
         )
 
         # Submit the confirmation form for this internship.

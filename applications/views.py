@@ -63,7 +63,7 @@ def internship_new(request):
 @login_required
 def internship_edit(request, internship_id):
     # Find the row named by the URL, or show a 404 page if it does not exist.
-    internship = get_object_or_404(Internship, id=internship_id)
+    internship = get_object_or_404(Internship, id=internship_id, owner=request.user)
     if request.method == "POST":
         # instance= makes save() update this row instead of creating a new one.
         form = InternshipForm(request.POST, instance=internship)
@@ -80,7 +80,7 @@ def internship_edit(request, internship_id):
 @login_required
 def internship_delete(request, internship_id):
     # Use the number in the URL to find the internship being deleted.
-    internship = get_object_or_404(Internship, id=internship_id)
+    internship = get_object_or_404(Internship, id=internship_id, owner=request.user)
 
     # Only a submitted form (POST) deletes the row. Visiting the page (GET)
     # merely shows a confirmation question.
