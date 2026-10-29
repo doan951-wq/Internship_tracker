@@ -8,9 +8,11 @@ from .forms import InternshipForm
 # Import our Internship model class from this app's models.py file.
 from .models import STATUS_CHOICES, Internship
 
+from django.contrib.auth.decorators import login_required
 
 # A view is a function Django calls to handle a browser request.
 # Django supplies the request argument with information about that visit.
+@login_required
 def internship_list(request):
     # Retrieve all internships with the earliest application deadlines first.
     internships = Internship.objects.order_by("apply_by")
@@ -38,7 +40,7 @@ def internship_list(request):
     # Django searches the installed apps' templates folders for this file.
     return render(request, "applications/internship_list.html", context)
 
-
+@login_required
 def internship_new(request):
     if request.method == "POST":
         # request.POST holds the values the browser submitted.
@@ -54,7 +56,7 @@ def internship_new(request):
     context = {"form": form}
     return render(request, "applications/internship_new.html", context)
 
-
+@login_required
 def internship_edit(request, internship_id):
     # Find the row named by the URL, or show a 404 page if it does not exist.
     internship = get_object_or_404(Internship, id=internship_id)
@@ -71,7 +73,7 @@ def internship_edit(request, internship_id):
     context = {"form": form, "internship": internship}
     return render(request, "applications/internship_edit.html", context)
 
-
+@login_required
 def internship_delete(request, internship_id):
     # Use the number in the URL to find the internship being deleted.
     internship = get_object_or_404(Internship, id=internship_id)

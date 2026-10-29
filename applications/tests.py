@@ -1,12 +1,41 @@
 from datetime import date
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from .models import STATUS_CHOICES, Internship
 
 
-# Django finds classes that inherit from TestCase and runs their test_ methods.
-class InternshipListTests(TestCase):
+class AuthenticatedTestCase(TestCase):
+    def setUp(self):
+        super().setUp()
+        user = get_user_model().objects.create_user(username="testuser")
+        self.client.force_login(user)
+
+
+class LoginRequiredTests(TestCase):
+    def test_anonymous_requests_redirect_without_changing_internships(self):
+        internship = Internship.objects.create(
+            name="Google", apply_by=date(2026, 10, 31)
+        )
+        urls = ["/", "/new/", f"/{internship.id}/edit/", f"/{internship.id}/delete/"]
+        for url in urls:
+            for method in ("get", "post"):
+                with self.subTest(url=url, method=method):
+                    data = {
+                        "name": "Changed", "apply_by": "2026-11-01", "status": "offer",
+                    } if method == "post" else {}
+                    response = getattr(self.client, method)(url, data)
+                    self.assertRedirects(response, f"/accounts/login/?next={url}")
+                    self.assertEqual(Internship.objects.count(), 1)
+                    internship.refresh_from_db()
+                    self.assertEqual(internship.name, "Google")
+                    self.assertEqual(internship.apply_by, date(2026, 10, 31))
+                    self.assertEqual(internship.status, "applied")
+
+
+# These tests log in before exercising the protected views.
+class InternshipListTests(AuthenticatedTestCase):
     def test_homepage_shows_internship_name(self):
         # Make one temporary database row for this test.
         Internship.objects.create(name="Google", apply_by=date(2026, 10, 31))
@@ -94,7 +123,7 @@ class InternshipListTests(TestCase):
                 )
 
 
-class InternshipCreateTests(TestCase):
+class InternshipCreateTests(AuthenticatedTestCase):
     def test_submitting_valid_form_creates_internship(self):
         # Submit the same field values a browser would send from the form.
         response = self.client.post("/new/", {
@@ -131,7 +160,7 @@ class InternshipCreateTests(TestCase):
         )
 
 
-class InternshipEditTests(TestCase):
+class InternshipEditTests(AuthenticatedTestCase):
     def test_submitting_edit_form_updates_existing_internship(self):
         # Create the row that the edit form should update.
         internship = Internship.objects.create(
@@ -158,7 +187,7 @@ class InternshipEditTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class InternshipDeleteTests(TestCase):
+class InternshipDeleteTests(AuthenticatedTestCase):
     def test_visiting_delete_page_keeps_internship(self):
         # Create an internship to show on the confirmation page.
         internship = Internship.objects.create(

@@ -11,7 +11,7 @@
     <p><a href="/new/">Add internship</a></p>
     <!-- GET puts the selected status in the URL when the form is submitted. -->
     <form method="get" action="/">
-        <input type="text" name="q" value ="{{ search_query }}">
+        <input type="text" name="q" value="{{ search_query }}">
         <label for="status">Status</label>
         <select id="status" name="status">
             <option value=""{% if not selected_status %} selected{% endif %}>All statuses</option>
