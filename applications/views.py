@@ -15,7 +15,9 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def internship_list(request):
     # Retrieve all internships with the earliest application deadlines first.
-    internships = Internship.objects.order_by("apply_by")
+    internships = Internship.objects.filter(
+        owner=request.user
+    ).order_by("apply_by")
 
     # GET parameters let the filter be bookmarked or shared in the page URL.
     search_query = request.GET.get("q", "")
@@ -46,7 +48,9 @@ def internship_new(request):
         # request.POST holds the values the browser submitted.
         form = InternshipForm(request.POST)
         if form.is_valid():
-            form.save()
+            internship = form.save(commit=False)
+            internship.owner = request.user
+            internship.save()
             return redirect("/")
     else:
         # A GET request displays an empty form.

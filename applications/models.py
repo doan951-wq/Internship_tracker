@@ -1,6 +1,7 @@
 # Import Django's database-model tools. The `models` module contains classes
 # such as Model, CharField, and DateField.
 from django.db import models
+from django.conf import settings
 
 
 # This is a list of tuples. Each tuple contains:
@@ -19,6 +20,14 @@ STATUS_CHOICES = [
 # Inheriting from models.Model turns this normal Python class into a Django
 # model. Django will connect the model to a PostgreSQL table.
 class Internship(models.Model):
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+
+
+    )
     # CharField describes a text column. Each internship object will store its
     # own string in its `name` attribute.
     name = models.CharField(max_length=200)

@@ -9,8 +9,8 @@ from .models import STATUS_CHOICES, Internship
 class AuthenticatedTestCase(TestCase):
     def setUp(self):
         super().setUp()
-        user = get_user_model().objects.create_user(username="testuser")
-        self.client.force_login(user)
+        self.user = get_user_model().objects.create_user(username="testuser")
+        self.client.force_login(self.user)
 
 
 class LoginRequiredTests(TestCase):
@@ -36,9 +36,25 @@ class LoginRequiredTests(TestCase):
 
 # These tests log in before exercising the protected views.
 class InternshipListTests(AuthenticatedTestCase):
+    def test_homepage_excludes_other_users_and_unowned_internships(self):
+        other_user = get_user_model().objects.create_user(username="otheruser")
+        own = Internship.objects.create(
+            owner=self.user, name="Mine", apply_by=date(2026, 10, 31)
+        )
+        Internship.objects.create(
+            owner=other_user, name="Other user's", apply_by=date(2026, 10, 15)
+        )
+        Internship.objects.create(name="Unowned", apply_by=date(2026, 10, 1))
+
+        response = self.client.get("/")
+
+        self.assertEqual(list(response.context["internships"]), [own])
+        self.assertNotContains(response, "Other user's")
+        self.assertNotContains(response, "Unowned")
+
     def test_homepage_shows_internship_name(self):
         # Make one temporary database row for this test.
-        Internship.objects.create(name="Google", apply_by=date(2026, 10, 31))
+        Internship.objects.create(owner=self.user, name="Google", apply_by=date(2026, 10, 31))
 
         # Django's test client acts like a browser visiting the homepage.
         response = self.client.get("/")
@@ -48,10 +64,10 @@ class InternshipListTests(AuthenticatedTestCase):
 
     def test_homepage_orders_internships_by_deadline(self):
         # Create the later deadline first to check that dates control the order.
-        later = Internship.objects.create(
+        later = Internship.objects.create(owner=self.user,
             name="Google", apply_by=date(2026, 10, 31)
         )
-        earlier = Internship.objects.create(
+        earlier = Internship.objects.create(owner=self.user,
             name="Microsoft", apply_by=date(2026, 10, 15)
         )
 
@@ -61,13 +77,13 @@ class InternshipListTests(AuthenticatedTestCase):
         self.assertEqual(list(response.context["internships"]), [earlier, later])
 
     def test_status_filter_shows_only_matching_internships_in_deadline_order(self):
-        later = Internship.objects.create(
+        later = Internship.objects.create(owner=self.user,
             name="Google", apply_by=date(2026, 10, 31), status="interview"
         )
-        earlier = Internship.objects.create(
+        earlier = Internship.objects.create(owner=self.user,
             name="Microsoft", apply_by=date(2026, 10, 15), status="interview"
         )
-        Internship.objects.create(
+        Internship.objects.create(owner=self.user,
             name="Amazon", apply_by=date(2026, 10, 1), status="applied"
         )
 
@@ -84,7 +100,7 @@ class InternshipListTests(AuthenticatedTestCase):
 
     def test_status_filter_supports_every_status_choice(self):
         for status, label in STATUS_CHOICES:
-            Internship.objects.create(
+            Internship.objects.create(owner=self.user,
                 name=label, apply_by=date(2026, 10, 31), status=status
             )
 
@@ -97,7 +113,7 @@ class InternshipListTests(AuthenticatedTestCase):
                 )
 
     def test_status_filter_with_no_matches_shows_empty_message(self):
-        Internship.objects.create(name="Google", apply_by=date(2026, 10, 31))
+        Internship.objects.create(owner=self.user, name="Google", apply_by=date(2026, 10, 31))
 
         response = self.client.get("/", {"status": "offer"})
 
@@ -106,10 +122,10 @@ class InternshipListTests(AuthenticatedTestCase):
         self.assertNotContains(response, "No internships yet.")
 
     def test_all_statuses_and_invalid_status_show_all_internships(self):
-        later = Internship.objects.create(
+        later = Internship.objects.create(owner=self.user,
             name="Google", apply_by=date(2026, 10, 31), status="interview"
         )
-        earlier = Internship.objects.create(
+        earlier = Internship.objects.create(owner=self.user,
             name="Microsoft", apply_by=date(2026, 10, 15), status="applied"
         )
 
@@ -138,6 +154,7 @@ class InternshipCreateTests(AuthenticatedTestCase):
         self.assertEqual(internship.name, "Microsoft")
         self.assertEqual(internship.apply_by, date(2026, 10, 31))
         self.assertEqual(internship.status, "applied")
+        self.assertEqual(internship.owner, self.user)
 
         # A successful submission sends the browser back to the homepage.
         self.assertRedirects(response, "/")
